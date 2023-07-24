@@ -1,5 +1,7 @@
 package com.education.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.*;
 
@@ -19,8 +21,14 @@ public class Course {
     @Column
     private Date endDate;
 
-    @ManyToMany(mappedBy = "courses")
-    private List<Student> students = new ArrayList<>();
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "courses")
+    @JsonIgnore
+    private Set<Student> tutorials = new HashSet<>();
     public Course() {
     }
 
@@ -64,11 +72,12 @@ public class Course {
         this.endDate = endDate;
     }
 
-    public List<Student> getStudents() {
-        return students;
+
+    public Set<Student> getTutorials() {
+        return tutorials;
     }
 
-    public void setStudents(List<Student> students) {
-        this.students = students;
+    public void setTutorials(Set<Student> tutorials) {
+        this.tutorials = tutorials;
     }
 }
